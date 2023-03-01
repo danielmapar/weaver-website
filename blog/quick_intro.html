@@ -1,0 +1,328 @@
+<!--
+ Copyright 2023 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+
+
+<html>
+  <head>
+    
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWZW7L8C6L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWZW7L8C6L');
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, minimum-scale=1">
+
+    <title>A Quick Introduction to Service Weaver</title>
+    <link rel="stylesheet" href="/assets/css/common.css">
+    <link rel="stylesheet" href="/assets/css/blog.css">
+  </head>
+  <body>
+    
+
+<header>
+  <div class="header-menu">
+    <a href="/" class="logo">
+      <span>Service Weaver</span>
+    </a>
+    <ul>
+      <li><a href="/" class="navlink ">Home</a></li>
+      <li><a href="/docs.html" class="navlink ">Docs</a></li>
+      <li><a href="/blog" class="navlink active">Blog</a></li>
+      <li><a href="/contact.html" class="navlink ">Contact Us</a></li>
+      <li><a href="https://pkg.go.dev/github.com/ServiceWeaver/weaver" class="navlink">API</a></li>
+    </ul>
+  </div>
+  <a class="icon" href="https://github.com/ServiceWeaver/weaver">
+    <img src="/assets/images/github_logo.svg" alt="GitHub">
+  </a>
+</header>
+
+    <div class="page_blog">
+      <div class="contents">
+        <h1>A Quick Introduction to Service Weaver</h1>
+<blockquote>
+<p>Write your application like it is a monolith. Deploy it like it is a set of
+microservices.</p>
+</blockquote>
+<p><strong>TL;DR;</strong> Service Weaver is a programming framework for writing, deploying, and
+managing distributed applications in Go. With Service Weaver, you write your
+application like it is a traditional, single-process Go executable that runs on
+your local machine. Then, you deploy it to the Cloud, and the framework breaks
+it down into a set of connected microservices and integrates it with the cloud
+provider (e.g., monitoring, tracing, logging).</p>
+<h2>Why Service Weaver?</h2>
+<p>When we write an application that runs on our laptop, we rely on traditional
+programming concepts such as functions and interfaces, and our main challenges
+are centered around the application business logic.</p>
+<p>When an application outgrows the constraints of a single machine, however, and
+it is time to deploy it in the cloud, the above traditional programming model
+breaks down. Our beautiful application ends up a nightmare of broken-down
+business logic interspersed with networking calls, cloud integration points,
+and configuration files.</p>
+<h3 class="emphasize-title">Oh no, it is time to integrate with the cloud!!!</h3>
+<p>Our cloud integration journey requires us to first learn about configuring and
+building containers for our application binary. Next, we learn about cloud
+tooling (e.g., gcloud, kubectl) and how to configure the application in the
+cloud (e.g., Kubernetes YAML). Finally, we add appropriate cloud service API
+calls to the application.</p>
+<p>These steps are often cumbersome, time-consuming, and difficult to understand,
+even for the more experienced developers. Even then, we still have to handle
+many challenges related to the cloud's distributed nature. For example, we have
+to implement functionality related to service discovery, security, load
+balancing, and cross-service communication (e.g., JSON encoding/decoding,
+HTTP servers).</p>
+<p>Hence, our application code becomes more complicated and we slowly get
+distracted from our initial focus: application business logic.</p>
+<blockquote>
+<p>With Service Weaver, your focus is mostly on the application business logic.
+Service Weaver takes care of cloud configuration and integration with the cloud
+provider.</p>
+</blockquote>
+<h3 class="emphasize-title">Huh, what are microservices and do we really need them?</h3>
+<p>Once we migrate our application to the cloud, we often ask ourselves how to
+structure the application code due to the distributed nature of the cloud.</p>
+<p>A widely adopted strategy is to split the application binary into microservices.
+This split has multiple benefits, such as more efficient application scaling
+behavior, reduced error blast radius, separate security domains, and well
+established module boundaries.</p>
+<p>On the flip side, finding the right boundaries to perform the split isn't
+trivial. For example, should we split based on resource use, organizational
+reasons, the structure of the data, or provisioning for future growth? Hence,
+we often end up with more microservices than we need, resulting in additional
+failure points, greater latency, and an inherently more difficult application
+to develop, deploy, and manage.</p>
+<blockquote>
+<p>With Service Weaver, you are encouraged to split the application into as many
+components as desired. During deployment, you easily configure which components
+run together in the same microservice and which run in separate microservices.</p>
+</blockquote>
+<h3 class="emphasize-title">OMG, how do we manage our application?</h3>
+<p>As mentioned above, the complex nature of the cloud leads to a more difficult
+application to develop, deploy, and manage.</p>
+<p>For example, by splitting the application code into microservices, we end up
+with multiple application binaries, one per microservice. Instead of a single
+deployment, we end up running N different CI/CD pipelines to get N microservices
+deployed. Instead of a single configuration file, we end up writing a separate
+configuration file for each microservice, which makes it easy to omit setting up
+certain parameters, or even worse, set the wrong values.</p>
+<p>Since microservice binaries are deployed independently, we have to write our
+application with the assumption that each microservice runs at a different code
+version. This complicates development and requires careful deployment strategies
+to mitigate risk. It also complicates testing, since it requires testing all
+possible combinations of microservice versions and their interactions.</p>
+<p>Finally, since our application logic is split across multiple binaries, which
+also contain cloud-specific calls, end-to-end testing is challenging to do
+locally. We are more likely to rely on detecting errors when deploying the
+application services, as opposed to running end-to-end tests.</p>
+<blockquote>
+<p>With Service Weaver, you deploy and manage a single application binary. The
+fact that it runs as separate microservices in the cloud is an implementation
+detail: all of your tooling preserves the impression of a single application
+binary. You can also easily run and test your application locally, before
+deploying it in the cloud.</p>
+</blockquote>
+<h3 class="emphasize-title">Finally it works. Oh, performance?</h3>
+<p>Once we got our microservice-based application to run correctly in the cloud,
+we realize that its performance is terrible. We do some digging and find out
+that most of our compute cycles are spent serializing and sending data across
+the network. We don't want to reinvent the network transport and serialization
+protocols, so we just leave the application as is. It costs us more to run, but
+we don't want to invest additional engineering time in optimizing performance.</p>
+<blockquote>
+<p>Service Weaver uses custom serialization and transport protocols that are up to
+three times more cost effective than the best industry solutions (i.e., gRPC
+and protocol buffers). This means your cloud bill is significantly reduced and
+you can double-down on your focus on the application logic.</p>
+</blockquote>
+<h2>How to Write an Application with Service Weaver?</h2>
+<p>The core abstraction of Service Weaver is a <em>component</em>, an actor-like unit of
+computation. A component is represented as a regular Go interface, and
+components interact with each other by calling the methods defined by these
+interfaces. For example, here is a simple Reverser component that, as the name
+suggests, reverses strings.</p>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;"><code><span style="display:flex;"><span><span style="color:#75715e">// The interface of the Reverser component.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#fff">Reverser</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#fff">Reverse</span>(<span style="color:#fff">context</span>.<span style="color:#fff">Context</span>, <span style="color:#66d9ef">string</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// The implementation of the Reverser component.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#fff">reverser</span> <span style="color:#66d9ef">struct</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#fff">weaver</span>.<span style="color:#fff">Implements</span>[<span style="color:#fff">Reverser</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#fff">r</span> <span style="color:#fff">reverser</span>) <span style="color:#fff">Reverse</span>(<span style="color:#fff">_</span> <span style="color:#fff">context</span>.<span style="color:#fff">Context</span>, <span style="color:#fff">s</span> <span style="color:#66d9ef">string</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#fff">runes</span> <span style="color:#f92672">:=</span> []rune(<span style="color:#fff">s</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#fff">n</span> <span style="color:#f92672">:=</span> len(<span style="color:#fff">runes</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#fff">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#fff">i</span> &lt; <span style="color:#fff">n</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>; <span style="color:#fff">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#fff">runes</span>[<span style="color:#fff">i</span>], <span style="color:#fff">runes</span>[<span style="color:#fff">n</span><span style="color:#f92672">-</span><span style="color:#fff">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] = <span style="color:#fff">runes</span>[<span style="color:#fff">n</span><span style="color:#f92672">-</span><span style="color:#fff">i</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], <span style="color:#fff">runes</span>[<span style="color:#fff">i</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> string(<span style="color:#fff">runes</span>), <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><p>Other components can interact with the Reverser component as simply as calling
+its methods:</p>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;"><code><span style="display:flex;"><span><span style="color:#fff">reversed</span>, <span style="color:#fff">err</span> <span style="color:#f92672">:=</span> <span style="color:#fff">reverser</span>.<span style="color:#fff">Reverse</span>(<span style="color:#fff">ctx</span>, <span style="color:#e6db74">&#34;Hello, World!&#34;</span>)
+</span></span></code></pre><p>The main advantage of components is that they aren't tied to OS processes.
+Despite the fact that we didn’t write any networking or serialization code,
+components can run in separate processes or on completely different machines.
+Here is a diagram illustrating this concept:</p>
+<p><img src="../assets/images/components.svg" alt="A diagram showing off various types of Service Weaver deployments"></p>
+<p>When two components run together in a single process, method calls between them
+are executed as regular Go method calls. When two components run in separate
+processes, method calls between them are executed as RPCs.</p>
+<p>Splitting your application into a number of components is a lot like splitting
+your application into a number of microservices. It encourages clear abstraction
+boundaries, it allows different components to scale independently, and so on.
+However, components avoid a lot of <a href="http://blogs.newardassociates.com/blog/2023/you-want-modules-not-microservices.html">the drawbacks of microservices</a>:</p>
+<ul>
+<li>All components run at the same version. You don’t have to reason about subtle
+cross-version compatibility,
+<a href="https://scholar.google.com/scholar?cluster=4116586908204898847">one of the leading causes of system failures in the wild</a>.</li>
+<li>You can run and test your entire application as easily as running <code>go run</code> and
+<code>go test</code>. You don’t have to figure out how to build and run <code>n</code> different
+microservices, all in the right order with the right environment and
+dependencies.</li>
+<li>Splitting and merging microservices can be painful. This leads people to avoid
+microservices entirely or to split their application into an unnecessarily large
+number of microservices out of fear that “it will be harder to split later”.
+Service Weaver makes it trivial to add new components or merge two components
+together. You don’t have to worry about getting component boundaries perfect.</li>
+</ul>
+<h2>How to Manage my Service Weaver Application?</h2>
+<p>Service Weaver provides mechanisms to easily test, debug and deploy new versions
+of your application, without the headaches and the burden a cloud developer has
+to face today.</p>
+<h3 class="emphasize-title">Deploying</h3>
+<p>Service Weaver makes it as easy to run an application on the cloud as it is to
+run it locally on your laptop:</p>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;"><code><span style="display:flex;"><span>$ go run .                           <span style="color:#75715e"># Run locally, in the same OS process.</span>
+</span></span><span style="display:flex;"><span>$ weaver multi deploy weaver.toml    <span style="color:#75715e"># Run locally, in multiple OS processes.</span>
+</span></span><span style="display:flex;"><span>$ weaver gke deploy weaver.toml      <span style="color:#75715e"># Run in the cloud.</span>
+</span></span></code></pre><h3 class="emphasize-title">Configuration</h3>
+<p>Service Weaver requires a tiny amount of configuration to deploy to the cloud.
+The Online Boutique demo application has over 1,500 lines of configuration.
+The same app written with Service Weaver has less than 10:</p>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;"><code><span style="display:flex;"><span>[<span style="color:#fff">weaver</span>]
+</span></span><span style="display:flex;"><span><span style="color:#fff">binary</span> = <span style="color:#e6db74">&#34;./online_boutique&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#fff">rollout</span> = <span style="color:#e6db74">&#34;6h&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[<span style="color:#fff">gke</span>]
+</span></span><span style="display:flex;"><span><span style="color:#fff">regions</span> = [<span style="color:#e6db74">&#34;us-west1&#34;</span>, <span style="color:#e6db74">&#34;us-east2&#34;</span>]
+</span></span><span style="display:flex;"><span><span style="color:#fff">public_listener</span> = [
+</span></span><span style="display:flex;"><span>  {<span style="color:#fff">name</span> = <span style="color:#e6db74">&#34;boutique&#34;</span>, <span style="color:#fff">hostname</span> = <span style="color:#e6db74">&#34;online-boutique.net&#34;</span>},
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre><p>We just need to specify the application binary, the duration of the rollout,
+the regions where the application should be deployed, and which network
+listeners should be publicly accessible. That’s it.</p>
+<h3 class="emphasize-title">Rolling out New Versions</h3>
+<p>Serving systems evolve over time. Whether you're fixing bugs or adding new
+features, it is inevitable that you will have to roll out a new version of your
+system to replace the currently running version. To maintain the availability
+of their systems, people typically perform rolling updates.</p>
+<p>During a rolling update, nodes running the old version of the code will have to
+communicate with other nodes running the new version of the code. In
+<a href="https://scholar.google.com/scholar?cluster=4116586908204898847">Understanding and Detecting Software Upgrade Failures in Distributed Systems</a>,
+Zhang et al. perform a case study of 123 failed updates in 8 widely used
+systems. They found that the majority of failures were caused by the
+interactions between multiple versions of a system:</p>
+<blockquote>
+<p>About two thirds of update failures are caused by interaction between two
+software versions that hold incompatible data syntax or semantics assumptions.</p>
+</blockquote>
+<p>Service Weaver takes a different approach to rollouts. It ensures that client
+requests are executed entirely within a single version of a system. A component
+in one version will never communicate with a component in a different version.
+This eliminates the leading cause of update failures, allowing you to roll out
+new versions of your application safely and with less headache.</p>
+<p>When you make changes to your application, simply rebuild and rerun it. Service
+Weaver will take care of gradually shifting traffic from the old version to the
+new version.</p>
+<h3 class="emphasize-title">Instrumenting</h3>
+<p>Service Weaver provides libraries for logging, metrics, and tracing. This
+telemetry is automatically integrated into the environment where an application
+is deployed. For example, if we deploy an application on Google Cloud, logs are
+automatically exported to <a href="https://cloud.google.com/logging">Google Cloud Logging</a>, metrics are
+automatically exported to the <a href="https://cloud.google.com/monitoring/">Google Cloud Monitoring</a>, traces
+are uploaded to <a href="https://cloud.google.com/trace">Google Cloud Tracing</a>. Here is an example of how
+to add a counter to the Reverser component:</p>
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;"><code><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#fff">reverseCount</span> = <span style="color:#fff">weaver</span>.<span style="color:#fff">NewCounter</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;reverse_count&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;The number of times Reverser.Reverse has been called&#34;</span>,
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#fff">reverser</span>) <span style="color:#fff">Reverse</span>(<span style="color:#fff">_</span> <span style="color:#fff">context</span>.<span style="color:#fff">Context</span>, <span style="color:#fff">s</span> <span style="color:#66d9ef">string</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#fff">reverseCount</span>.<span style="color:#fff">Add</span>(<span style="color:#ae81ff">1.0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre><h3 class="emphasize-title">Testing</h3>
+<p>The development cycle of a microservices based application is slow. If you want
+to iterate on an application’s business logic, you have to install heavy cloud
+dependencies, install complex testing frameworks, or deploy the application to
+the cloud. All of these approaches take a significant toll on development
+velocity.</p>
+<p>Service Weaver applications, on the other hand, can be built, run, and tested
+like regular Go programs. You can make a change to your application, and simply
+run <code>go run .</code> to see the effect of the changes immediately. Additionally,
+Service Weaver provides a <code>weavertest</code> package that makes writing end-to-end
+tests as easy as writing unit tests.</p>
+<h2>High-Performance</h2>
+<p>Service Weaver applications are not only easier to write, run, and manage;
+they’re also faster.</p>
+<blockquote>
+<p>We found out that Service Weaver improves application latency by 15x and reduces
+VM costs by 9x when compared to a typical microservices solution built on top
+of gRPC and protocol buffers.</p>
+</blockquote>
+<h3 class="emphasize-title">No RPCs, No Protos, An Efficient Network Protocol</h3>
+<p>The fact that all application components run at the same code version allows
+Service Weaver to heavily optimize its serialization and communication
+protocols. For example, co-located components communicate via direct method
+calls; components that aren't co-located communicate using language native
+data-structures and a custom RPC protocol. Both the serialization and the RPC
+protocols are more efficient than gRPC and Protocol Buffers because they avoid
+the overhead needed to resolve versioning issues.</p>
+<h3 class="emphasize-title">Efficient Autoscaling and Load Balancing</h3>
+<p>Another benefit of running all components at the same version in a single
+application binary is that Service Weaver has a bird’s-eye view into the
+application and the interactions between components. This allows Service Weaver
+to make intelligent component placement decisions and employ efficient
+autoscaling solutions.</p>
+<h3 class="emphasize-title">Flexible Placement</h3>
+<p>Service Weaver provides flexible component placement. For example, we can
+co-locate two components that communicate often with each other in the same
+process or machine. Conversely, we can place components with the same resource
+bottleneck on different machines to improve resource utilization or to improve
+fault-isolation. Service Weaver enables us to do all this with a single-line
+config change.</p>
+<h3 class="emphasize-title">Sharding</h3>
+<p>Service Weaver enables you to shard application requests across component
+replicas with application specific sharding keys. This allows you to more
+intelligently spread load across component replicas. The affinity also improves
+cache efficiency, which lowers application latency and reduces hotspots.</p>
+
+      </div>
+    </div>
+  </body>
+</html>
